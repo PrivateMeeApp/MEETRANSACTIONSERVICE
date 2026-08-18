@@ -224,7 +224,10 @@ exports.getTransactions = async (req, res) => {
     }
 
     const transactions = await Transaction.findAll({
-      where: { wallet_id: wallet.id },
+      where: { 
+        wallet_id: wallet.id,
+        status: 'SUCCESS'
+      },
       order: [['created_at', 'DESC']]
     });
 
