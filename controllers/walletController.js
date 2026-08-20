@@ -32,7 +32,7 @@ exports.addMoney = async (req, res) => {
     }
 
     const options = {
-      amount: amount * 100,
+      amount: Math.round(amount * 100),
       currency: 'INR',
       receipt: `receipt_${Date.now()}`
     };
@@ -56,7 +56,7 @@ exports.addMoney = async (req, res) => {
       status: 'CREATED',
     });
 
-    res.json({ order, transaction_id: transaction.id });
+    res.json({ order, transaction_id: transaction.id, key: process.env.RAZORPAY_KEY_ID });
   } catch (error) {
     console.error('Error adding money:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -106,7 +106,7 @@ exports.paySession = async (req, res) => {
     if (finalAmount > 0) {
       // Create Razorpay order
       const options = {
-        amount: finalAmount * 100,
+        amount: Math.round(finalAmount * 100),
         currency: 'INR',
         receipt: `session_${Date.now()}`
       };
@@ -129,7 +129,7 @@ exports.paySession = async (req, res) => {
         status: 'CREATED',
       });
 
-      return res.json({ order, transaction_id: transaction.id });
+      return res.json({ order, transaction_id: transaction.id, key: process.env.RAZORPAY_KEY_ID });
     } else {
       // Fully covered by wallet
       const newBalance = walletBalance - totalToPay;
